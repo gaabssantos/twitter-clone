@@ -9,6 +9,7 @@ class User extends Model {
     private $name;
     private $email;
     private $password;
+    private $error;
 
     public function __get($name)
     {
@@ -29,6 +30,17 @@ class User extends Model {
         $stmt->execute();
 
         return $this;
+    }
+
+    public function isValid() {
+        if (strlen($this->__get('name')) < 3 || 
+        strlen($this->__get('email')) < 3 || 
+        strlen($this->__get('password')) < 3) {
+            $this->__set('error', 'str_length');
+            return false;
+        }
+
+        return true;
     }
 }
 

@@ -21,7 +21,11 @@ class IndexController extends Action {
 		$user->__set('email', $_POST['email']);
 		$user->__set('password', $_POST['password']);
 
-		$user->save();
+		if ($user->isValid()) {
+			$user->save();
+		} else {
+			header('Location: /inscreverse?error='.$user->error);
+		}
 	}
 
 }
