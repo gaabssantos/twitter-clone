@@ -32,11 +32,25 @@ class User extends Model {
         return $this;
     }
 
+    public function findUserByEmail() {
+        $query = 'select name, email from users where email = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(1, $this->__get('email'));
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function isValid() {
         if (strlen($this->__get('name')) < 3 || 
         strlen($this->__get('email')) < 3 || 
         strlen($this->__get('password')) < 3) {
             $this->__set('error', 'str_length');
+            return false;
+        }
+
+        if ($this->findUserByEmail()) {
+            $this->__set('error', 'email_found');
             return false;
         }
 

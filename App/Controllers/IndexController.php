@@ -23,6 +23,8 @@ class IndexController extends Action {
 
 		if ($user->isValid()) {
 			$user->save();
+
+			$this->render('register');
 		} else {
 			header('Location: /inscreverse?error='.$user->error);
 		}

@@ -17,6 +17,10 @@
           <div class="bg-danger text-white rounded p-3 m-3">
             Os campos tem menos que 3 caracteres.
           </div>
+        <?php } else if (isset($_GET['error']) && $_GET['error'] == 'email_found') { ?>
+          <div class="bg-danger text-white rounded p-3 m-3">
+            Este e-mail já existe, utilize outro.
+          </div>
         <?php } ?>
 
         <div class="row">
