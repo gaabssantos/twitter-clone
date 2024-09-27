@@ -19,14 +19,14 @@ class IndexController extends Action {
 		$user = Container::getModel('User');
 		$user->__set('name', $_POST['name']);
 		$user->__set('email', $_POST['email']);
-		$user->__set('password', $_POST['password']);
+		$user->__set('password', md5($_POST['password']));
 
 		if ($user->isValid()) {
 			$user->save();
 
 			$this->render('register');
 		} else {
-			header('Location: /inscreverse?error='.$user->error);
+			header('Location: /inscreverse?error='.$user->__get('error'));
 		}
 	}
 

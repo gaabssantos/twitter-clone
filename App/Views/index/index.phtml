@@ -21,13 +21,24 @@
     </div>
 
     <div class="col-md-6 pt-4 pl-5 pr-5">
-		<form>
+
+		<?php if (isset($_GET['error']) && $_GET['error'] == 'account_not_found') { ?>
+			<div class="bg-danger text-white rounded p-3 m-3">
+				Esta conta não existe.
+			</div>
+		<?php } else if (isset($_GET['logout'])) { ?>
+			<div class="bg-success text-white rounded p-3 m-3">
+				Você saiu com sucesso.
+			</div>
+		<?php } ?>
+
+		<form method="post" action="/authenticate">
 			<div class="row">
 				<div class="col">
-					<input type="text" class="form-control" placeholder="E-mail">
+					<input type="email" name="email" class="form-control" placeholder="E-mail">
 				</div>
 				<div class="col">
-					<input type="text" class="form-control" placeholder="Senha">
+					<input type="password" name="password" class="form-control" placeholder="Senha">
 				</div>
 				<div class="col-auto">
 					<button type="submit" class="btn btn-primary mb-2">Entrar</button>
