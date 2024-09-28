@@ -42,6 +42,26 @@ class AppController extends Action {
             header('Location: /?error=account_not_found');
         }
     }
+
+    public function whoFollow() {
+        $this->checkUserLogged();
+
+        $searchFor = isset($_GET['searchFor']) ? $_GET['searchFor'] : '';
+
+        if ($searchFor != '') {
+            $user = Container::getModel('User');
+
+            $user->__set('name', $searchFor);
+
+            $users = $user->getAll();
+
+            $this->view->searchFor = $users;
+        } else {
+            $this->view->searchFor = [];
+        }
+        
+        $this->render('whoFollow');
+    }
 }
 
 ?>
