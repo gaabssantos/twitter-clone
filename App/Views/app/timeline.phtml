@@ -67,6 +67,10 @@
 					<div class="bg-success text-white p-3 my-3 rounded">
 						Você tweetou com sucesso.
 					</div>
+				<?php } else if (isset($_GET['remove'])) { ?>
+					<div class="bg-success text-white p-3 my-3 rounded">
+						Você removeu o seu tweet com sucesso.
+					</div>
 				<?php } ?>
 
 
@@ -96,7 +100,7 @@
 					<form>
 						<?php if ($_SESSION['id'] == $tweet['id_usuario']) {?>
 						<div class="col d-flex justify-content-end">
-							<button type="submit" class="btn btn-danger"><small>Remover</small></button>
+							<button type="submit" class="btn btn-danger"><small><a href="/remove?tweet_id=<?= $tweet['id'] ?>">Remover</a></small></button>
 						</div>
 						<?php } ?>
 					</form>

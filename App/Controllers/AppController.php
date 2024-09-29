@@ -81,8 +81,24 @@ class AppController extends Action {
                 header('Location: /quem_seguir?following='.$name);
             }
         } else if ($action == 'unfollow') {
+            if ($user->getAll()[0]['following_sn'] == 1) {
             $user->unfollowUser($id);
+            header('Location: /quem_seguir');
+            }
         }
+    }
+
+    public function remove() {
+        $this->checkUserLogged();
+
+        $id = isset($_GET['tweet_id']) ? $_GET['tweet_id'] : '';
+
+        $tweet = Container::getModel('Tweet');
+        $tweet->__set('id', $id);
+
+        $tweet->remove();
+
+        header('Location: /timeline?remove=success');
     }
 }
 
