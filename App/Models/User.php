@@ -77,12 +77,54 @@ class User extends Model {
     }
 
     public function getAll() {
-        $query = "select id, name, email from users where name like ?";
+        $query = 
+        "select 
+            u.id, 
+            u.name, 
+            u.email, 
+            (
+                select count(*) 
+            from 
+                users_followers as uf 
+            where 
+                uf.id_usuario = :id_user and uf.id_usuario_following = u.id
+            ) as following_sn 
+            from 
+                users as u 
+            where 
+                u.name like :name and u.id != :id_user";
         $stmt = $this->db->prepare($query);
-        $stmt->bindValue(1, '%'.$this->__get('name').'%');
+        $stmt->bindValue(':name', '%'.$this->__get('name').'%');
+        $stmt->bindValue(':id_user', $this->__get('id'));
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getUserById($id) {
+        $query = "select name from users where id = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function followUser($id) {
+        $query = "insert into users_followers (id_usuario, id_usuario_following) values (?, ?)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(1, $this->__get('id'));
+        $stmt->bindValue(2, $id);
+        $stmt->execute();
+    }
+
+    public function unfollowUser($id) {
+        $query = 
+        "delete from users_followers where id_usuario = ? and id_usuario_following = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(1, $this->__get('id'));
+        $stmt->bindValue(2, $id);
+        $stmt->execute();
     }
 }
 

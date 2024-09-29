@@ -27,7 +27,7 @@
 					
 					<div class="row mt-2 mb-2">
 						<div class="col mb-2">
-							<span class="perfilPainelNome">Nome do Usuário</span>
+							<span class="perfilPainelNome"><?= $_SESSION['name'] ?></span>
 						</div>
 					</div>
 
@@ -74,6 +74,14 @@
 				</div>
 			</div>
 
+			<?php if (isset($_GET['following']) && 
+			preg_match(
+				'/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', base64_decode($_GET['following']))) { ?>
+				<div class="bg-success text-white p-3 my-3 rounded">
+						Você acabou de seguir o: <?= base64_decode($_GET['following']) ?>!
+					</div>
+			<?php } ?>
+
 			<?php foreach ($this->view->searchFor as $key => $users) { ?>
 				<div class="row mb-2">
 					<div class="col">
@@ -83,8 +91,11 @@
 									<div class="col-md-6"> <?= $users['name'] ?> </div>
 									<div class="col-md-6 d-flex justify-content-end">
 										<div>
-											<a href="#" class="btn btn-success">Seguir</a>
-											<a href="#" class="btn btn-danger">Deixar de seguir</a>
+											<?php if ($users['following_sn'] != 1) { ?>
+												<a href="/action?action=follow&id=<?= $users['id'] ?>" 
+												class="btn btn-success">Seguir</a>
+											<?php } ?>
+											<a href="/action?action=unfollow&id=<?= $users['id'] ?>" class="btn btn-danger">Deixar de seguir</a>
 										</div>
 									</div>
 								</div>

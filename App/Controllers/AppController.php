@@ -52,6 +52,7 @@ class AppController extends Action {
             $user = Container::getModel('User');
 
             $user->__set('name', $searchFor);
+            $user->__set('id', $_SESSION['id']);
 
             $users = $user->getAll();
 
@@ -61,6 +62,27 @@ class AppController extends Action {
         }
         
         $this->render('whoFollow');
+    }
+
+    public function action() {
+        $this->checkUserLogged();
+
+        $action = isset($_GET['action']) ? $_GET['action'] : '';
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
+
+        $user = Container::getModel('User');
+        $user->__set('id', $_SESSION['id']);
+
+        $name = base64_encode($user->getUserById($id)[0]['name']);
+
+        if ($action == 'follow') {
+            if ($user->getAll()[0]['following_sn'] == 0) {
+                $user->followUser($id);
+                header('Location: /quem_seguir?following='.$name);
+            }
+        } else if ($action == 'unfollow') {
+            $user->unfollowUser($id);
+        }
     }
 }
 
