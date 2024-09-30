@@ -10,8 +10,16 @@ class AppController extends Action {
         $this->checkUserLogged();
 
         $tweet = Container::getModel('Tweet');
+
+        $user = Container::getModel('User');
+        $user->__set('id', $_SESSION['id']);
+
         $tweet->__set('id_usuario', $_SESSION['id']);
         $tweets = $tweet->getAll();
+
+        $this->view->total_tweets = $user->getTotalTweets()['total_tweets'];
+        $this->view->total_following = $user->getTotalFollowing()['total_following'];
+        $this->view->total_followers = $user->getTotalFollowers()['total_followers'];
 
         $this->view->tweets = $tweets;
         $this->render('timeline');
@@ -47,6 +55,13 @@ class AppController extends Action {
         $this->checkUserLogged();
 
         $searchFor = isset($_GET['searchFor']) ? $_GET['searchFor'] : '';
+
+        $user = Container::getModel('User');
+        $user->__set('id', $_SESSION['id']);
+
+        $this->view->total_tweets = $user->getTotalTweets()['total_tweets'];
+        $this->view->total_following = $user->getTotalFollowing()['total_following'];
+        $this->view->total_followers = $user->getTotalFollowers()['total_followers'];
 
         if ($searchFor != '') {
             $user = Container::getModel('User');
