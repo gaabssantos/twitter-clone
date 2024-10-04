@@ -14,10 +14,15 @@ class AppController extends Action {
         $user = Container::getModel('User');
         $user->__set('id', $_SESSION['id']);
 
-        $tweet->__set('id_usuario', $_SESSION['id']);
-        $tweets = $tweet->getAll();
+        $page = !isset($_GET['page']) ? 0 : $_GET['page'];
+        $perTweetsPage = 10;
+        $displacement = $perTweetsPage * $page;
 
-        $this->view->total_tweets = $user->getTotalTweets()['total_tweets'];
+        $tweet->__set('id_usuario', $_SESSION['id']);
+        $tweets = $tweet->getPerPage($perTweetsPage, $displacement);
+        $total_tweets = $tweet->getTotalTweets();
+
+        $this->view->total_tweets = $tweet->getTotalTweets()[0]['total_tweets'];
         $this->view->total_following = $user->getTotalFollowing()['total_following'];
         $this->view->total_followers = $user->getTotalFollowers()['total_followers'];
 

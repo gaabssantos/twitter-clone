@@ -59,6 +59,64 @@ class Tweet extends Model {
         return $tweets;
     }
 
+    public function getPerPage($limit, $offset) {
+        $query = 
+            "select 
+                t.id, 
+                t.id_usuario, 
+                t.tweet, 
+                u.name, 
+                DATE_FORMAT(t.date, '%d/%m/%Y %H:%i') as date
+            from 
+                tweets as t
+            left join
+                users as u 
+            on 
+                (t.id_usuario = u.id)
+            where 
+                t.id_usuario = ?
+            or
+                t.id_usuario in (select id_usuario_following from users_followers where id_usuario = ?)
+            order by 
+                t.date desc
+            limit
+                $limit
+            offset
+                $offset";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(1, $this->__get('id_usuario'));
+        $stmt->bindValue(2, $this->__get('id_usuario'));
+        $stmt->execute();
+
+        $tweets = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $tweets;
+    }
+
+    public function getTotalTweets() {
+        $query = 
+            "select 
+                count(*) as total_tweets
+            from 
+                tweets as t
+            left join
+                users as u 
+            on 
+                (t.id_usuario = u.id)
+            where 
+                t.id_usuario = ?
+            or
+                t.id_usuario in (select id_usuario_following from users_followers where id_usuario = ?)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(1, $this->__get('id_usuario'));
+        $stmt->bindValue(2, $this->__get('id_usuario'));
+        $stmt->execute();
+
+        $tweets = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $tweets;
+    }
+
     public function remove() {
         $query = 'delete from tweets where id = ?';
         $stmt = $this->db->prepare($query);
